@@ -1,0 +1,12 @@
+# mariadb
+mariadb:
+  version: "10.1"
+  rootuser: "mysql"
+  password: "mariadb"
+  port: 3306
+  query_log_path: "/var/lib/mysql/log/mariadb/query.log"
+  slow_query_log_path: "/var/lib/mysql/log/mariadb/slow.log"
+  data_dir: "/var/lib/mysql"
+  charset: "utf8"
+  error_log_path: "/var/lib/mysql/log/mariadb/mariadb.log"
+  os_chooise_release: "centos7-amd64"

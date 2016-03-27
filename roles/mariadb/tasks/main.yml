@@ -1,0 +1,29 @@
+---
+- name: mariadb add repos
+  template: src=mariadb.repo.j2 dest=/etc/yum.repos.d/mariadb.repo mode=0644
+  when: ansible_os_family == "RedHat"
+
+
+- name: mariadb install
+  yum: name={{ item }} state=installed enablerepo=mariadb
+  with_items:
+    - MariaDB-server
+    - MariaDB-devel
+    - MariaDB-client
+  when: ansible_os_family == "RedHat"
+
+# - name: setting master my.cnf
+#   template: src=my.cnf.j2 dest=/etc/my.cnf.d/server.cnf mode=0644
+#   notify: mariadb restart
+
+- name: create user
+  user: name={{ mariadb.rootuser }} password={{ mariadb.password }}
+
+- name: run mariadb
+  service: name=mariadb state=running enabled=yes
+
+# - name: install_db
+#   shell: mysql_install_db
+#   args:
+#     user: "{{ mariadb.rootuser }}"
+#     defaults-file: /etc/my.cnf

@@ -1,0 +1,120 @@
+[mysqld]
+#
+# Base
+#
+user = {{ mariadb.rootuser }}
+port = {{ mariadb.port }}
+datadir = {{ mariadb.data_dir }}
+socket = /var/lib/mysql/mysql.sock
+symbolic-links = 0
+character-set-server = {{ mariadb.charset }}
+default-storage-engine = InnoDB
+collation-server = utf8_general_ci
+
+#
+# Replication
+#
+server-id = 1
+log-bin=mariadb-bin
+binlog_format=MIXED
+
+#
+# Logging
+#
+log_output = FILE
+log_warnings = 2
+general_log = 1
+general_log_file = {{ mariadb.query_log_path }}
+log_slow_admin_statements = 1
+log-queries-not-using-indexes = 1
+slow_query_log = 1
+slow_query_log_file = {{ mariadb.slow_query_log_path }}
+long_query_time = 3
+expire_logs_days = 7
+
+#
+# Cache and Memory
+#
+# Global
+thread_cache_size = 30
+table_open_cache = 400
+query_cache_size = 16M
+query_cache_limit = 1M
+# Global, Session
+max_heap_table_size = 16M
+tmp_table_size = 16M
+sort_buffer_size = 2M
+read_buffer_size = 131072
+join_buffer_size = 131072
+read_rnd_buffer_size = 262144
+
+# --------------------------------------------------------------------
+# InnoDB behavior
+# --------------------------------------------------------------------
+# Global
+innodb_file_format = Barracuda
+innodb_write_io_threads = 4
+innodb_read_io_threads = 4
+innodb_stats_on_metadata = 1
+innodb_max_dirty_pages_pct = 90
+innodb_adaptive_hash_index = 1
+innodb_adaptive_flushing = 1
+innodb_strict_mode = 1
+innodb_io_capacity = 200
+innodb_autoinc_lock_mode = 1
+innodb_change_buffering = inserts
+innodb_old_blocks_time = 500
+
+# --------------------------------------------------------------------
+# InnoDB base
+# --------------------------------------------------------------------
+# Global
+innodb_buffer_pool_size = 256M
+innodb_data_home_dir = {{ mariadb.data_dir }}
+innodb_data_file_path = ibdata1:1000M:autoextend
+innodb_file_per_table = 1
+innodb_autoextend_increment = 64M
+innodb_log_group_home_dir = {{ mariadb.data_dir }}
+innodb_fast_shutdown = 0
+innodb_log_file_size = 64M
+innodb_log_files_in_group = 2
+innodb_log_buffer_size = 8M
+innodb_additional_mem_pool_size = 8M
+innodb_thread_concurrency = 8
+innodb_flush_log_at_trx_commit = 1
+innodb_force_recovery = 0
+innodb_doublewrite = 1
+innodb_sync_spin_loops = 20
+innodb_thread_sleep_delay = 1000
+innodb_commit_concurrency = 0
+innodb_concurrency_tickets = 500
+# Global, Session
+innodb_support_xa = FALSE
+innodb_lock_wait_timeout = 50
+innodb_table_locks = 1
+
+[mysqldump]
+default-character-set = utf8
+quick
+max_allowed_packet = 16M
+
+[mysql]
+default-character-set = {{ mariadb.charset }}
+no-auto-rehash
+show-warnings
+
+[client]
+default-character-set = {{ mariadb.charset }}
+port   = {{ mariadb.port }}
+socket = /var/lib/mysql/mysql.sock
+
+
+[mysqld_safe]
+log-error = {{ mariadb.error_log_path }}
+pid-file = /var/run/mariadb/mariadb.pid
+
+#
+# include all files from the config directory
+#
+# !includedir /etc/my.cnf.d
+
